@@ -42,13 +42,10 @@ export default function Header() {
               Home
             </Link>
             <Link href="/products" className="nav-link text-sm font-medium">
-              Shop
+              Product
             </Link>
             <Link href="/collections" className="nav-link text-sm font-medium">
-              Collections
-            </Link>
-            <Link href="/about" className="nav-link text-sm font-medium">
-              About
+              Order
             </Link>
           </nav>
         </div>

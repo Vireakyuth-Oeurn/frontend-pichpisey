@@ -1,73 +1,47 @@
-import ProductCard from "@/components/product-card"
-import { Button } from "@/components/ui/button"
+'use client';
 
-// Sample product data with enhanced properties
-const products = [
-  {
-    id: 1,
-    name: "Pink Blush Palette",
-    price: 24.99,
-    image: "/placeholder.svg?height=300&width=300",
-    rating: 4.5,
-    isNew: true,
-  },
-  {
-    id: 2,
-    name: "Hydrating Face Mask",
-    price: 12.99,
-    image: "/placeholder.svg?height=300&width=300",
-    rating: 4.8,
-    isSale: true,
-    discount: 15,
-  },
-  {
-    id: 3,
-    name: "Lip Gloss Set",
-    price: 18.99,
-    image: "/placeholder.svg?height=300&width=300",
-    rating: 4.2,
-  },
-  {
-    id: 4,
-    name: "Skincare Bundle",
-    price: 49.99,
-    image: "/placeholder.svg?height=300&width=300",
-    rating: 4.9,
-    isNew: true,
-  },
-  {
-    id: 5,
-    name: "Facial Cleanser",
-    price: 15.99,
-    image: "/placeholder.svg?height=300&width=300",
-    rating: 4.6,
-  },
-  {
-    id: 6,
-    name: "Makeup Brush Set",
-    price: 29.99,
-    image: "/placeholder.svg?height=300&width=300",
-    rating: 4.7,
-    isSale: true,
-    discount: 20,
-  },
-  {
-    id: 7,
-    name: "Moisturizing Cream",
-    price: 22.99,
-    image: "/placeholder.svg?height=300&width=300",
-    rating: 4.4,
-  },
-  {
-    id: 8,
-    name: "Eye Shadow Collection",
-    price: 34.99,
-    image: "/placeholder.svg?height=300&width=300",
-    rating: 4.3,
-  },
-]
+import { useEffect, useState } from "react";
+import ProductCard from "@/components/product-card";
+import { Button } from "@/components/ui/button";
+
+type Product = {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  rating: number;
+};
 
 export default function PopularProducts() {
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const API_URL = 'http://52.202.236.27:1337/api/products?populate=*';
+
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch(API_URL);
+        const json = await res.json();
+        const data = json.data.map((product: any) => {
+          const attributes = product.attributes || {};
+          const image = attributes.image?.data?.attributes?.url || '';
+          return {
+            id: product.id,
+            name: attributes.name || '',
+            price: attributes.price || 0,
+            image: `http://52.202.236.27:1337${image}`,
+            rating: attributes.rating || 0,
+          };
+        });
+        setProducts(data);
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
   return (
     <section className="py-16">
       <div className="container mx-auto px-4">
@@ -75,32 +49,6 @@ export default function PopularProducts() {
           <div>
             <h2 className="text-3xl font-bold text-gray-800">Popular Products</h2>
             <p className="mt-2 text-gray-600">Discover our most loved beauty essentials</p>
-          </div>
-          <div className="mt-4 md:mt-0 flex gap-2 overflow-x-auto pb-2 md:pb-0">
-            <Button
-              variant="outline"
-              className="rounded-full border-pink-200 text-pink-500 hover:bg-pink-50 hover:text-pink-600 whitespace-nowrap"
-            >
-              All Products
-            </Button>
-            <Button
-              variant="outline"
-              className="rounded-full border-pink-200 text-pink-500 hover:bg-pink-50 hover:text-pink-600 whitespace-nowrap"
-            >
-              Skincare
-            </Button>
-            <Button
-              variant="outline"
-              className="rounded-full border-pink-200 text-pink-500 hover:bg-pink-50 hover:text-pink-600 whitespace-nowrap"
-            >
-              Makeup
-            </Button>
-            <Button
-              variant="outline"
-              className="rounded-full border-pink-200 text-pink-500 hover:bg-pink-50 hover:text-pink-600 whitespace-nowrap"
-            >
-              Hair Care
-            </Button>
           </div>
         </div>
 
@@ -111,9 +59,11 @@ export default function PopularProducts() {
         </div>
 
         <div className="mt-12 text-center">
-          <Button className="bg-pink-500 hover:bg-pink-600 rounded-full px-8">View All Products</Button>
+          <Button className="bg-pink-500 hover:bg-pink-600 rounded-full px-8">
+            View All Products
+          </Button>
         </div>
       </div>
     </section>
-  )
+  );
 }
