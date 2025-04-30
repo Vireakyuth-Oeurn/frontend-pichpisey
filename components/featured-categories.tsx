@@ -28,7 +28,7 @@ const categories = [
 
 export default function FeaturedCategories() {
   return (
-    <section className="py-16 bg-gradient-to-b from-white to-pink-50">
+    <section className="py-16 bg-gradient-to-b bg-pink-50">
       <div className="container mx-auto px-4">
         <div className="mb-10 text-center">
           <h2 className="text-3xl font-bold text-gray-800">Shop by Category</h2>
