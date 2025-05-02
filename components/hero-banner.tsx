@@ -8,11 +8,12 @@ export default function HeroBanner() {
       
       {/* Background Image */}
       <Image
-        src="cover.png" // Your actual image
+        src="/cover.png" // No need to provide the full path
         alt="Beauty Cover"
         fill
         className="object-cover object-center brightness-95"
       />
+
       
       {/* Light pink overlay */}
       <div className="absolute inset-0 bg-pink-100/40 "></div>

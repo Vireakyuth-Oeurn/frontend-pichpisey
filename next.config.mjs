@@ -9,6 +9,9 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  images: {
+    domains: ['52.202.236.27'],
+  },
 }
 
 export default nextConfig
