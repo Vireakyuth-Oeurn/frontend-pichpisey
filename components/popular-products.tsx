@@ -24,7 +24,7 @@ export default function PopularProducts() {
         const json = await res.json();
 
         const data = json.data.map((product: any) => {
-          const image = product.image;  
+          const image = product.image.url;  
           return {
             id: product.id,
             name: product.name || '',
