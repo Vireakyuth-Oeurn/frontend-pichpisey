@@ -16,8 +16,7 @@ export default function PopularProducts() {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    const API_URL = 'http://52.202.236.27:1337/api/products?populate=*';
-
+    const API_URL = process.env.NEXT_PUBLIC_API_URL + "/api/products?populate=*";
     const fetchProducts = async () => {
       try {
         const res = await fetch(API_URL);

@@ -18,6 +18,7 @@ export default function TestimonialCarousel() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [imageLoadError, setImageLoadError] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
     const API_URL = "http://52.202.236.27:1337/api/testimonials?populate=*";
@@ -28,19 +29,24 @@ export default function TestimonialCarousel() {
         const json = await res.json();
 
         const fetched = json.data.map((testimonial: any) => {
+          const imageUrl = testimonial.image.url;
+
           const contentText =
-            testimonial.content?.[0]?.children?.[0]?.text || "No content available";
+            testimonial.attributes?.content || 
+            testimonial.content?.[0]?.children?.[0]?.text || 
+            "No content available";
 
           return {
             id: testimonial.id,
-            text: testimonial.text,
-            content: contentText,
-            author: testimonial.author,
-            rating: testimonial.rating,
-            image: "/placeholder.jpg", 
+            text: testimonial.attributes?.text || testimonial.text || "No title",
+            content: typeof contentText === 'string' ? contentText : "No content available",
+            author: testimonial.attributes?.author || testimonial.author || "Anonymous",
+            rating: testimonial.attributes?.rating || testimonial.rating || 5,
+            image: imageUrl ? `http://52.202.236.27:1337${imageUrl}` : '/default-image.png', 
           };
         });
 
+        console.log("Fetched testimonials:", fetched);
         setTestimonials(fetched);
       } catch (error) {
         console.error("Failed to fetch testimonials", error);
@@ -49,6 +55,14 @@ export default function TestimonialCarousel() {
 
     fetchTestimonials();
   }, []);
+
+  const handleImageError = (id: number) => {
+    setImageLoadError(prev => ({
+      ...prev,
+      [id]: true
+    }));
+    console.error(`Image load error for testimonial ${id}`);
+  };
 
   const goToSlide = useCallback(
     (index: number) => {
@@ -85,7 +99,7 @@ export default function TestimonialCarousel() {
     return (
       <div className="flex items-center gap-1">
         {Array.from({ length: 5 }).map((_, i) => (
-          <Star
+          <Star 
             key={i}
             className={`w-5 h-5 ${i < rating ? "text-yellow-500 fill-yellow-500" : "text-gray-300"}`}
             strokeWidth={1.5}
@@ -141,13 +155,22 @@ export default function TestimonialCarousel() {
                         <div className="w-48 h-48 md:w-64 md:h-64 rounded-full bg-white/50 backdrop-blur-sm shadow-inner"></div>
                       </div>
                       <div className="relative z-10 flex items-center justify-center h-full">
-                        <Image
-                          src={testimonial.image}
-                          alt={testimonial.author}
-                          width={200}
-                          height={200}
-                          className="object-cover rounded-full border-4 border-white shadow-lg"
-                        />
+                        {imageLoadError[testimonial.id] ? (
+                          <div className="w-48 h-48 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                            Image not available
+                          </div>
+                        ) : (
+                          // Important: Next.js configuration required for external images
+                          <Image
+                            src={testimonial.image}
+                            alt={testimonial.author}
+                            width={200}
+                            height={200}
+                            onError={() => handleImageError(testimonial.id)}
+                            className="object-cover rounded-full border-4 border-white shadow-lg"
+                            unoptimized // Add this to bypass Next.js image optimization for external URLs
+                          />
+                        )}
                       </div>
                     </div>
                     <div className="absolute bottom-8 left-8 text-xs font-bold tracking-widest text-pink-500 opacity-50 uppercase">
