@@ -21,7 +21,7 @@ export default function TestimonialCarousel() {
   const [imageLoadError, setImageLoadError] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
-    const API_URL = "http://52.202.236.27:1337/api/testimonials?populate=*";
+    const API_URL = "https://pichpisey-store.oneforthecode.xyz/api/testimonials?populate=*";
 
     const fetchTestimonials = async () => {
       try {
@@ -42,7 +42,7 @@ export default function TestimonialCarousel() {
             content: typeof contentText === 'string' ? contentText : "No content available",
             author: testimonial.attributes?.author || testimonial.author || "Anonymous",
             rating: testimonial.attributes?.rating || testimonial.rating || 5,
-            image: imageUrl ? `http://52.202.236.27:1337${imageUrl}` : '/default-image.png', 
+            image: imageUrl ? `https://pichpisey-store.oneforthecode.xyz${imageUrl}` : '/default-image.png', 
           };
         });
 
