@@ -16,7 +16,7 @@ export default function PopularProducts() {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    const API_URL = "http://pichpisey-store.oneforthecode.xyz:1337/api/products?populate=*";
+    const API_URL = "https://pichpisey-store.oneforthecode.xyz:1337/api/products?populate=*";
     const fetchProducts = async () => {
       try {
         const res = await fetch(API_URL);
@@ -28,7 +28,7 @@ export default function PopularProducts() {
             id: product.id,
             name: product.name || '',
             price: product.price || 0,
-            image: image ? `http://pichpisey-store.oneforthecode.xyz:1337${image}` : '/default-image.png',
+            image: image ? `https://pichpisey-store.oneforthecode.xyz:1337${image}` : '/default-image.png',
             rating: product.rating || 0,
           };
         });
